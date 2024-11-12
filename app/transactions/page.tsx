@@ -8,7 +8,7 @@ const Transaction = async () => {
   const transactions = await db.transaction.findMany({});
 
   return (
-    <div className="pg-6 space-y-6">
+    <div className="space-y-6 p-6">
       {/* titulo */}
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Transações</h1>
