@@ -38,6 +38,8 @@ import {
   SelectValue,
 } from "./ui/select";
 import { DatePicker } from "./ui/date-picker";
+import { addTransaction } from "../_actions/add-transaction";
+import { useState } from "react";
 
 const TRANSACTION_TYPE_OPTIONS = [
   {
@@ -136,8 +138,8 @@ const formSchema = z.object({
   name: z.string().min(1, {
     message: "o nome é obrigatório",
   }),
-  amout: z.string().trim().min(1, {
-    message: "o valor é obrigatório",
+  amout: z.number().positive({
+    message: "O valor precisa ser positivo",
   }),
   type: z.nativeEnum(TransactionType, {
     required_error: "o tipo é obrigatório",
@@ -153,11 +155,15 @@ const formSchema = z.object({
   }),
 });
 
+type FormSchema = z.infer<typeof formSchema>;
+
 export default function AddTransactionButton() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
+
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amout: "",
+      amout: 10,
       category: TransactionCategory.OTHER,
       type: TransactionType.DEPOSIT,
       paymentMethod: TransactionPaymentMethod.OTHER,
@@ -166,13 +172,21 @@ export default function AddTransactionButton() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: FormSchema) {
+    try {
+      await addTransaction(values);
+      setDialogIsOpen(false);
+      form.reset();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
     <Dialog
+      open={dialogIsOpen}
       onOpenChange={(open) => {
+        setDialogIsOpen(open);
         if (!open) {
           form.reset();
         }
@@ -214,7 +228,15 @@ export default function AddTransactionButton() {
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
-                    <MoneyInput placeholder="Digite o valor..." {...field} />
+                    <MoneyInput
+                      placeholder="Digite o valor..."
+                      value={field.value}
+                      onValueChange={({ floatValue }) =>
+                        field.onChange(floatValue)
+                      }
+                      onBlur={field.onBlur}
+                      disabled={field.disabled}
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -252,38 +274,10 @@ export default function AddTransactionButton() {
 
             <FormField
               control={form.control}
-              name="category"
+              name="paymentMethod"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Forma de pagamento</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a verified email to display" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {TRANSACTION_PAYMENT_METHOD_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Categoria</FormLabel>
+                  <FormLabel>Metodos de pagamento</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
