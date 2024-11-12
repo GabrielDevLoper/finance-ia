@@ -4,6 +4,7 @@ import { ArrowDownUpIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -36,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { DatePicker } from "./ui/date-picker";
 
 const TRANSACTION_TYPE_OPTIONS = [
   {
@@ -169,7 +171,13 @@ export default function AddTransactionButton() {
   }
 
   return (
-    <Dialog>
+    <Dialog
+      onOpenChange={(open) => {
+        if (!open) {
+          form.reset();
+        }
+      }}
+    >
       <DialogTrigger asChild>
         <Button className="rounded-full font-bold">
           Adicionar transação
@@ -326,9 +334,25 @@ export default function AddTransactionButton() {
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Data</FormLabel>
+                  <DatePicker value={field.value} onChange={field.onChange} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <DialogFooter>
-              <Button variant={"outline"}>Cancelar</Button>
-              <Button>Adicionar</Button>
+              <DialogClose asChild>
+                <Button type="button" variant={"outline"}>
+                  Cancelar
+                </Button>
+              </DialogClose>
+              <Button type="submit">Adicionar</Button>
             </DialogFooter>
           </form>
         </Form>
