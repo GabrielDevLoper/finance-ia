@@ -13,7 +13,7 @@ export function TransactionTypeBadge({
     return (
       <Badge className="bg-muted text-green-500 hover:bg-muted">
         <CircleIcon className="mr-2 fill-green-500" size={10} />
-        GANHO
+        DEPÓSITO
       </Badge>
     );
   }
