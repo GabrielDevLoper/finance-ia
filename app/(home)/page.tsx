@@ -1,9 +1,11 @@
 import { auth } from "@clerk/nextjs/server";
-import Navbar from "./_components/navbar";
+import Navbar from "../_components/navbar";
 import { redirect } from "next/navigation";
-import SummaryCards from "./(home)/_components/summary-cards";
-import TimeSelect from "./(home)/_components/time-select";
+import SummaryCards from "./_components/summary-cards";
+import TimeSelect from "./_components/time-select";
 import { isMatch } from "date-fns";
+import { TransactionPieChart } from "./_components/transaction-pie-chart";
+import { getDashboard } from "../_data/getDashboard";
 
 interface HomeProps {
   searchParams: {
@@ -24,6 +26,8 @@ export default async function Home({ searchParams: { month } }: HomeProps) {
     redirect("?month=01");
   }
 
+  const dashboard = await getDashboard(month);
+
   return (
     <>
       <Navbar />
@@ -32,8 +36,14 @@ export default async function Home({ searchParams: { month } }: HomeProps) {
           <h1 className="text-2xl font-bold">Dashboard</h1>
           <TimeSelect />
         </div>
-
-        <SummaryCards month={month} />
+        <div className="grid grid-cols-[2fr,1fr]">
+          <div className="flex flex-col gap-6">
+            <SummaryCards {...dashboard} month={month} />
+            <div className="grid grid-cols-3 grid-rows-1 gap-6">
+              <TransactionPieChart {...dashboard} />
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
