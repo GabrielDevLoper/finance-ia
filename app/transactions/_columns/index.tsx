@@ -6,28 +6,10 @@ import { TransactionTypeBadge } from "../_components/type-badge";
 import { Button } from "@/app/_components/ui/button";
 import { TrashIcon } from "lucide-react";
 import EditTransactionButton from "../_components/edit-transaction-button";
-
-export const TRANSACTION_CATEGORY_LABEL = {
-  EDUCATION: "EDUCAÇÃO",
-  ENTERTAINMENT: "ENTRETENIMENTO",
-  FOOD: "ALIMENTAÇÃO",
-  HEALTH: "SAUDE",
-  HOUSING: "MORADIA",
-  OTHER: "OUTROS",
-  SALARY: "SALÁRIO",
-  TRANSPORTATION: "TRANSPORTE",
-  UTILITY: "UTILIDADES",
-};
-
-export const TRANSACTION_PAYMENT_METHOD_LABEL = {
-  BANK_TRANSFER: "TRANSFERÊNCIA BANCÁRIA",
-  BANK_SLIP: "BOLETO BANCÁRIO",
-  CASH: "DINHEIRO",
-  CREDIT_CARD: "CARTÃO DE CRÉDITO",
-  DEBIT_CARD: "CARTÃO DE DÉBITO",
-  OTHER: "OUTROS",
-  PIX: "PIX",
-};
+import {
+  TRANSACTION_CATEGORY_LABEL,
+  TRANSACTION_PAYMENT_METHOD_LABEL,
+} from "../_constants";
 
 export const transactionColumns: ColumnDef<Transaction>[] = [
   {
